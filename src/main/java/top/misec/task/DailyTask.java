@@ -40,6 +40,7 @@ public class DailyTask {
                 log.info("------{}结束------\n", task.getName());
                 taskSuspend();
             } catch (InterruptedException e) {
+                log.info("task:{}执行失败，{}", task.getName(), e.getMessage());
                 e.printStackTrace();
             }
         }
