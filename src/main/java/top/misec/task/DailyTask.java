@@ -1,18 +1,15 @@
 package top.misec.task;
 
+import static top.misec.task.TaskInfoHolder.STATUS_CODE_STR;
 import com.google.gson.JsonObject;
 import lombok.extern.log4j.Log4j2;
 import top.misec.apiquery.ApiList;
 import top.misec.utils.HttpUtil;
-
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-
-import static top.misec.task.TaskInfoHolder.calculateUpgradeDays;
-import static top.misec.task.TaskInfoHolder.STATUS_CODE_STR;
 
 /**
  * @author @JunzhouLiu @Kurenai
@@ -26,7 +23,7 @@ public class DailyTask {
             new VideoWatch(),
             new MangaSign(),
             new CoinAdd(),
-            new Silver2coin(),
+        //new Silver2coin(),
             new LiveCheckin(),
             new GiveGift(),
             new ChargeMe(),
@@ -34,22 +31,20 @@ public class DailyTask {
     );
 
     public void doDailyTask() {
-        try {
-            printTime();
-            log.debug("任务启动中");
-            for (Task task : dailyTasks) {
+        printTime();
+        log.debug("任务启动中");
+        for (Task task : dailyTasks) {
+            try {
                 log.info("------{}开始------", task.getName());
                 task.run();
                 log.info("------{}结束------\n", task.getName());
                 taskSuspend();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            log.info("本日任务已全部执行完毕");
-            calculateUpgradeDays();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            ServerPush.doServerPush();
         }
+        log.info("本日任务已全部执行完毕");
+        ServerPush.doServerPush();
     }
 
     /**
